@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Twój Profil</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        /* Ogólne style */
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #444;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Pełna wysokość ekranu */
+    flex-direction: column; /* Ułożenie elementów w kolumnie */
+}
+
+/* Dostosowanie kontenera */
+.container {
+    max-width: 800px;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 100px; /* Zapewnienie miejsca na nawigację */
+}
+
+/* Poprawiona nawigacja */
+nav {
+    background-color: #333;
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Przyklejenie do góry */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+        .profile-heading {
+            font-size: 48px; /* Powiększone */
+            font-weight: 600;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-image {
+            display: block;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background-image: url('/images/profile-placeholder.jpg'); /* Dodaj swoją grafikę */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .section {
+            margin-bottom: 40px; /* Większy odstęp między sekcjami */
+            background-color: #fafafa;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .section label {
+            font-size: 24px; /* Powiększone */
+            font-weight: bold;
+            color: #555;
+            width: 30%;
+        }
+
+        .section p {
+            font-size: 22px; /* Powiększone */
+            color: #333;
+            padding: 15px;
+            border-radius: 6px;
+            width: 70%;
+            background-color: #f7f7f7;
+        }
+
+        .section textarea {
+            font-size: 22px; /* Powiększone */
+            color: #333;
+            padding: 15px;
+            border-radius: 6px;
+            width: 100%;
+            background-color: #f7f7f7;
+            height: 150px;
+            border: 1px solid #ddd;
+            transition: border 0.3s;
+        }
+
+        .section textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 22px; /* Powiększone */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+
+
+        /* Ikony */
+        .section-icon {
+            font-size: 32px;
+            margin-right: 20px;
+            color: #007bff;
+        }
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 0 10px;
+            }
+
+            .profile-heading {
+                font-size: 40px; /* Powiększenie dla mniejszych ekranów */
+            }
+
+            .section label {
+                font-size: 20px; /* Powiększenie */
+            }
+
+            button {
+                width: 100%;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Nawigacja -->
+<div th:replace="~{menu.html}"></div>
+
+<!-- Kontener Profilu -->
+<div class="container">
+    <div class="profile-image"></div> <!-- Obrazek profilowy -->
+
+    <h2 class="profile-heading">Twój Profil</h2>
+
+    <!-- Imię -->
+    <div class="section">
+        <div class="section-icon">👤</div> <!-- Ikona przy sekcji -->
+        <label>Imię:</label>
+        <p th:text="${user.name}"></p> <!-- Pokazuje imię -->
+    </div>
+
+    <!-- Nazwisko -->
+    <div class="section">
+        <div class="section-icon">👥</div> <!-- Ikona przy sekcji -->
+        <label>Nazwisko:</label>
+        <p th:text="${user.surname}"></p> <!-- Pokazuje nazwisko -->
+    </div>
+
+    <!-- Email -->
+    <div class="section">
+        <div class="section-icon">📧</div> <!-- Ikona przy sekcji -->
+        <label>Email:</label>
+        <p th:text="${user.email}"></p> <!-- Pokazuje email -->
+    </div>
+
+    <!-- Opis profilu -->
+    <div class="section">
+        <div class="section-icon">📝</div> <!-- Ikona przy sekcji -->
+        <label>Opis profilu:</label>
+        <form method="post">
+            <textarea name="profileDescription" class="form-control" rows="3" placeholder="Wpisz opis..."></textarea>
+            <button type="submit">Zapisz</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

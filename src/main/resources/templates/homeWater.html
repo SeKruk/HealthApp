@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthApp - Zapotrzebowanie na wodę</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        /* Ogólne style */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        h2, h3 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="number"], button {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus, button:focus {
+            outline: none;
+            border-color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ffcc00;
+            color: #333;
+        }
+
+        .water-info {
+            background-color: #ffffff;
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .water-info h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .water-info span {
+            font-weight: bold;
+            color: #ffcc00;
+            font-size: 20px;
+        }
+
+        .water-info p {
+            font-size: 18px;
+        }
+
+
+
+        /* Responsywność */
+        @media (max-width: 768px) {
+            input[type="number"], button {
+                width: 80%;
+                margin-left: 10%;
+            }
+
+            .water-info {
+                padding: 20px;
+                margin: 20px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Nawigacja -->
+<div th:replace="~{menu.html}"></div>
+
+<!-- Sekcja Zapotrzebowanie na wodę -->
+<div class="container">
+    <h2>Zapotrzebowanie na wodę</h2>
+
+    <div class="water-info">
+        <label for="weight">Podaj swoją masę ciała (kg):</label>
+        <input type="number" id="weight" placeholder="Waga w kg">
+        <button onclick="calculateWaterNeeds()">Oblicz zapotrzebowanie</button>
+
+        <h3>Dzienne zapotrzebowanie: <span id="water-need">0</span> ml</h3>
+    </div>
+
+    <div class="water-info">
+        <h3>Dodaj spożycie płynów</h3>
+        <label for="water-intake">Podaj ilość wypitej wody (ml):</label>
+        <input type="number" id="water-intake" placeholder="Ilość ml">
+        <button onclick="addWaterIntake()">Dodaj</button>
+
+        <h3>Łącznie wypita woda: <span id="total-water">0</span> ml</h3>
+        <h3>Pozostało do wypicia: <span id="remaining-water">0</span> ml</h3>
+    </div>
+</div>
+
+<script>
+    let dailyWaterNeed = 0;
+    let totalWaterIntake = 0;
+
+    function calculateWaterNeeds() {
+        let weight = document.getElementById("weight").value;
+        if (weight > 0) {
+            dailyWaterNeed = weight * 35; // 35 ml na 1 kg
+            document.getElementById("water-need").innerText = dailyWaterNeed.toFixed(0);
+            updateRemainingWater();
+        } else {
+            alert("Podaj poprawną masę ciała!");
+        }
+    }
+
+    function addWaterIntake() {
+        let intake = document.getElementById("water-intake").value;
+        if (intake > 0) {
+            totalWaterIntake += parseFloat(intake);
+            document.getElementById("total-water").innerText = totalWaterIntake.toFixed(0);
+            updateRemainingWater();
+        } else {
+            alert("Podaj poprawną ilość wody!");
+        }
+    }
+
+    function updateRemainingWater() {
+        let remaining = dailyWaterNeed - totalWaterIntake;
+        document.getElementById("remaining-water").innerText = remaining > 0 ? remaining.toFixed(0) : "0";
+    }
+</script>
+
+</body>
+</html>

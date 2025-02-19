@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator BMR</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f3f4f7 0%, #e8f1f4 100%);
+            color: #333;
+        }
+
+
+        /* Main content */
+        .main-content {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #fff;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content p {
+            margin: 20px 0;
+            font-size: 42px; /* Zmniejszone rozmiary */
+            font-weight: bold;
+            color: #333;
+        }
+
+        #basic-calories, #goal-calories {
+            font-size: 55px; /* Umiarkowane zwiększenie czcionki */
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        /* Form Styling */
+        .container {
+            display: flex;
+            justify-content: center;
+            padding: 50px 0;
+        }
+
+        .forms-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+            transition: transform 0.3s ease;
+        }
+
+        .forms-container:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px; /* Zmniejszona wielkość nagłówka */
+            color: #333;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        label {
+            font-size: 18px; /* Umiarkowane zwiększenie czcionki */
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px; /* Zmniejszenie odstępu */
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px; /* Umiarkowane zwiększenie czcionki */
+            background-color: #fafafa;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            font-size: 18px; /* Umiarkowane powiększenie czcionki */
+            font-weight: bold;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 50px 0;
+        }
+
+        table, th, td {
+            border: 2px solid #ddd;
+        }
+
+        th, td {
+            padding: 16px; /* Zmniejszenie paddingu */
+            text-align: left;
+            font-size: 16px; /* Zmniejszenie czcionki w tabeli */
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            background-color: #ffffff;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<!-- Nawigacja -->
+<div th:replace="~{menu.html}"></div>
+
+
+<main class="main-content">
+    <p>Twoje zapotrzebowanie kaloryczne wynosi:</p>
+    <p id="basic-calories"></p>
+    <p>Aby osiągnąć cel, twoje zapotrzebowanie kaloryczne wynosi:</p>
+    <p id="goal-calories"></p>
+</main>
+
+<div class="container">
+    <div class="forms-container">
+        <form id="bmrForm">
+            <h2>Kalkulator BMR</h2>
+            <label for="sex">Płeć:</label>
+            <select id="sex" name="gender">
+                <option value="male">Mężczyzna</option>
+                <option value="female">Kobieta</option>
+            </select>
+            <label for="height">Wzrost w cm:</label>
+            <input type="number" id="height" name="height" required>
+            <label for="weight">Waga:</label>
+            <input type="number" id="weight" name="weight" required>
+            <label for="age">Wiek:</label>
+            <input type="number" id="age" name="age" required>
+            <label for="activity">Aktywność fizyczna:</label>
+            <select id="activity" name="activityLevel">
+                <option value="1.2">Znikoma (brak ćwiczeń, praca siedząca)</option>
+                <option value="1.375">Bardzo mała (trening raz w tygodniu, praca siedząca)</option>
+                <option value="1.55">Umiarkowana (trening 2 razy w tygodniu)</option>
+                <option value="1.725">Duża (trening kilka razy w tygodniu)</option>
+                <option value="1.9">Bardzo duża (4+ treningi w tygodniu, ciężka praca fizyczna)</option>
+            </select>
+            <label for="goal">Cel:</label>
+            <select id="goal" name="goal">
+                <option value="lose_weight">Chcę schudnąć</option>
+                <option value="gain_weight">Chcę przytyć</option>
+                <option value="maintain_weight">Chcę utrzymać masę</option>
+            </select>
+            <input type="submit" value="Oblicz wskaźnik BMR">
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#bmrForm').on('submit', function(event) {
+            event.preventDefault(); // Zatrzymaj domyślne działanie formularza
+
+            $.ajax({
+                url: '/api/guests/calculateBMR', // URL do wywołania
+                type: 'POST',
+                data: $(this).serialize(), // Serializacja danych formularza
+                success: function(response) {
+                    // Uaktualnienie wyników w odpowiednich miejscach
+                    $('#basic-calories').text(response.basicCalories + ' kcal');
+                    $('#goal-calories').text(response.goalCalories + ' kcal');
+                },
+                error: function(xhr) {
+                    alert('Wystąpił błąd: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

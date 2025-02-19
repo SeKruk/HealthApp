@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthApp</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        #searchForm {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #searchForm input[type="text"], #searchForm input[type="date"], #searchForm input[type="submit"] {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+        }
+
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 125px;
+        }
+
+       .grid-item {
+    background-color: #f0f0f0;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    max-width: calc(50% - 20px);
+    border: 2px solid black;
+    box-sizing: border-box;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-size: cover; /* Dopasowanie obrazka do rozmiaru kontenera */
+    background-position: center; /* Wycentrowanie obrazka w kontenerze */
+    position: relative; /* Ustawienie relative dla poprawnego pozycjonowania .text-box */
+
+}
+
+        .grid-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .grid-item:first-child {
+            background-image: url('https://ocdn.eu/pulscms-transforms/1/xH6k9kpTURBXy9iMGQ5ODY2YWY0YzZlZDI1ZDVhYjE4Y2VhZDBjM2FjYy5qcGeTlQMAzEfNA-fNAjOTCaYwOWU5ZWQGkwXNBLDNAnbeAAGhMAE/co-na-sniadanie-mamy-dla-was-piec-pysznych-i-zdrowych-propozycji.jpg');
+        }
+
+        .grid-item:nth-child(2) {
+            background-image: url('https://staticsmaker.iplsc.com/smaker_production_2023_10_05/35971b2376fd1df6476478d651e73667-md.jpg');
+        }
+
+        .grid-item:nth-child(3) {
+            background-image: url('https://blog.dietly.pl/wp-content/uploads/2020/04/AdobeStock_273763910_Easy-Resize.com_-1024x683.jpg');
+        }
+
+        .grid-item:nth-child(4) {
+            background-image: url('https://www.helios-szklo.pl/foto/news/5/adobestock_155537960a-min.jpeg');
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .pagination button:hover {
+            background-color: #111;
+        }
+
+        .pagination button.disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+          .text-box {
+    background-color: #ddd;
+    width: 100%;
+    height: 12.5%; /* 1/8 wysokości dla text-box */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 5px;
+    border-top: 1px solid #aaa; /* Separator między obrazkiem a tekstem */
+    position: absolute; /* Pozycjonowanie absolutne w obrębie .grid-item */
+    bottom: 0;
+    left: 0;}
+
+    </style>
+</head>
+<body>
+<!-- Nawigacja -->
+<div th:replace="~{menu.html}"></div>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <a href="/recipes/breakfast"></a>
+            <div class="text-box">
+                <h3 th:text= Śniadania></h3>
+            </div>
+        </div>
+        <div class="grid-item">
+            <a href="/recipes/lunch"></a>
+            <div class="text-box">
+                <h3 th:text= Obiady></h3>
+            </div>
+        </div>
+        <div class="grid-item">
+            <a href="/recipes/dinner"></a>
+            <div class="text-box">
+                <h3 th:text= Kolacje></h3>
+            </div>
+        </div>
+        <div class="grid-item">
+            <a href="/recipes/dessert"></a>
+            <div class="text-box">
+                <h3 th:text= Desery></h3>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

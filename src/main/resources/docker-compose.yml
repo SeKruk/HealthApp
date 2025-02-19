@@ -1,0 +1,16 @@
+
+services:
+  postgres:
+    image: postgres:16.3
+    container_name: postgres-containerHealth
+    environment:
+      POSTGRES_USER: sebastian
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: databaseHealthApp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:

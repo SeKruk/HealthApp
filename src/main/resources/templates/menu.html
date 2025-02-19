@@ -1,0 +1,23 @@
+<nav xmlns:th="http://www.w3.org/1999/xhtml">
+    <ul>
+        <li class="reserve">Zadbaj o swoje zdrowie już dzisiaj!</li>
+        <li><a href="/homeAboutUs">Strona główna</a></li>
+        <li><a href="/homeWater">Woda</a></li>
+        <li><a href="/homeBMR">Zapotrzebowanie kcal</a></li>
+        <li><a href="/homeBMI">BMI</a></li>
+        <li><a href="/homeRecipe">Przepisy</a></li>
+        <li><a href="/homeNutrition">Znajdź produkt</a></li>
+
+        <!-- Sprawdzamy, czy użytkownik jest zalogowany -->
+        <li th:if="${session.loggedInUser != null}">
+            <a href="/homeProfile">Twój profil</a>
+        </li>
+        <li th:if="${session.loggedInUser != null}">
+            <a href="/logout">Wyloguj</a>
+        </li>
+
+        <li th:if="${session.loggedInUser == null}">
+            <a href="/homeLogin">Zaloguj się</a>
+        </li>
+    </ul>
+</nav>

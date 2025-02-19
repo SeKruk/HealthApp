@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            margin: 20px auto;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .forms-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        select {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        /* 🔹 Poprawiona stylizacja dla produktów */
+        .product-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+
+        .product-container span {
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .product-container input {
+            width: 60px; /* 🔹 Mniejsze pole na gramaturę */
+            margin: 0 5px;
+            text-align: center;
+        }
+
+        .product-container button {
+            cursor: pointer;
+            background-color: #999; /* Light gray color for less visibility */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px; /* Smaller font size */
+            opacity: 0.7; /* Slightly transparent */
+        }
+
+        .product-container button:hover {
+            opacity: 1; /* Full opacity on hover */
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        /* Kalendarz */
+        .calendar-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            text-align: center;
+        }
+
+        #date-picker {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .forms-container {
+                flex-direction: column;
+            }
+        }
+         #searchForm {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    #searchForm input[type="text"], #searchForm input[type="date"], #searchForm input[type="submit"] {
+        padding: 10px;
+        margin: 5px;
+        font-size: 16px;
+    }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Nawigacja -->
+<div th:replace="~{menu.html}"></div>
+
+
+<div class="form-container">
+    <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}" style="color: green; font-weight: bold;"></p>
+    </div>
+    <form action="/products" method="post">
+        <input type="text" name="name" placeholder="Nazwa produktu" required>
+        <input type="number" name="kcal" placeholder="Kcal" required>
+        <input type="number" name="protein" placeholder="Protein" required>
+        <input type="number" name="fat" placeholder="Fat">
+        <input type="number" name="carb" placeholder="Carb">
+        <button type="submit">Dodaj produkt</button>
+    </form>
+</div>
+
+<div class="container">
+    <div class="forms-container">
+        <!-- Kalendarz -->
+        <form action="/homeNutritions" method="get">
+            <div class="calendar-container">
+                <h2>Wybierz datę</h2>
+                <input type="date" name="selectedDate" th:value="${selectedDate}"/>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+
+        <!-- Formularz posiłków -->
+        <form action="/saveDailyMeals" method="post">
+            <input type="hidden" name="mealDate" th:value="${selectedDate}">
+
+            <!-- Śniadanie -->
+            <div class="meal-section">
+                <h2>Śniadanie</h2>
+                <div id="breakfastProducts" class="product-list"></div>
+                <select id="breakfastSelect" name="breakfastSelect">
+                    <option value="">Wybierz produkt</option>
+                    <th:block th:each="product : ${products}">
+                        <option th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.kcal + ' kcal, ' + product.protein + 'g białka, ' + product.fat + 'g tłuszczu, ' + product.carb + 'g węglowodanów'}">
+                            Produkt
+                        </option>
+                    </th:block>
+                </select>
+                <button type="button" onclick="addProduct('breakfast')">Dodaj produkt do śniadania</button>
+                <input type="hidden" name="breakfastProductIds" id="breakfastProductIds">
+            </div>
+
+            <!-- Drugie śniadanie -->
+            <div class="meal-section">
+                <h2>Drugie śniadanie</h2>
+                <div id="secondBreakfastProducts" class="product-list"></div>
+                <select id="secondBreakfastSelect" name="secondBreakfastSelect">
+                    <option value="">Wybierz produkt</option>
+                    <th:block th:each="product : ${products}">
+                        <option th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.kcal + ' kcal, ' + product.protein + 'g białka, ' + product.fat + 'g tłuszczu, ' + product.carb + 'g węglowodanów'}">
+                            Produkt
+                        </option>
+                    </th:block>
+                </select>
+                <button type="button" onclick="addProduct('secondBreakfast')">Dodaj produkt do drugiego śniadania</button>
+                <input type="hidden" name="secondBreakfastProductIds" id="secondBreakfastProductIds">
+            </div>
+
+            <!-- Obiad -->
+            <div class="meal-section">
+                <h2>Obiad</h2>
+                <div id="lunchProducts" class="product-list"></div>
+                <select id="lunchSelect" name="lunchSelect">
+                    <option value="">Wybierz produkt</option>
+                    <th:block th:each="product : ${products}">
+                        <option th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.kcal + ' kcal, ' + product.protein + 'g białka, ' + product.fat + 'g tłuszczu, ' + product.carb + 'g węglowodanów'}">
+                            Produkt
+                        </option>
+                    </th:block>
+                </select>
+                <button type="button" onclick="addProduct('lunch')">Dodaj produkt do obiadu</button>
+                <input type="hidden" name="lunchProductIds" id="lunchProductIds">
+            </div>
+
+            <!-- Podwieczorek -->
+            <div class="meal-section">
+                <h2>Podwieczorek</h2>
+                <div id="snackProducts" class="product-list"></div>
+                <select id="snackSelect" name="snackSelect">
+                    <option value="">Wybierz produkt</option>
+                    <th:block th:each="product : ${products}">
+                        <option th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.kcal + ' kcal, ' + product.protein + 'g białka, ' + product.fat + 'g tłuszczu, ' + product.carb + 'g węglowodanów'}">
+                            Produkt
+                        </option>
+                    </th:block>
+                </select>
+                <button type="button" onclick="addProduct('snack')">Dodaj produkt do podwieczorku</button>
+                <input type="hidden" name="snackProductIds" id="snackProductIds">
+            </div>
+
+            <!-- Kolacja -->
+            <div class="meal-section">
+                <h2>Kolacja</h2>
+                <div id="dinnerProducts" class="product-list"></div>
+                <select id="dinnerSelect" name="dinnerSelect">
+                    <option value="">Wybierz produkt</option>
+                    <th:block th:each="product : ${products}">
+                        <option th:value="${product.id}"
+                                th:text="${product.name + ' - ' + product.kcal + ' kcal, ' + product.protein + 'g białka, ' + product.fat + 'g tłuszczu, ' + product.carb + 'g węglowodanów'}">
+                            Produkt
+                        </option>
+                    </th:block>
+                </select>
+                <button type="button" onclick="addProduct('dinner')">Dodaj produkt do kolacji</button>
+                <input type="hidden" name="dinnerProductIds" id="dinnerProductIds">
+            </div>
+
+            <!-- Podsumowanie dzienne -->
+            <h2>Podsumowanie dzienne</h2>
+            <table border="1">
+                <thead>
+                <tr>
+                    <th>Makroskładnik</th>
+                    <th>Śniadanie</th>
+                    <th>Drugie śniadanie</th>
+                    <th>Obiad</th>
+                    <th>Podwieczorek</th>
+                    <th>Kolacja</th>
+                    <th>Razem</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Kalorie (kcal)</td>
+                    <td id="cal-breakfast">0</td>
+                    <td id="cal-secondBreakfast">0</td>
+                    <td id="cal-lunch">0</td>
+                    <td id="cal-snack">0</td>
+                    <td id="cal-dinner">0</td>
+                    <td id="cal-total">0</td>
+                </tr>
+                <tr>
+                    <td>Białko (g)</td>
+                    <td id="protein-breakfast">0</td>
+                    <td id="protein-secondBreakfast">0</td>
+                    <td id="protein-lunch">0</td>
+                    <td id="protein-snack">0</td>
+                    <td id="protein-dinner">0</td>
+                    <td id="protein-total">0</td>
+                </tr>
+                <tr>
+                    <td>Tłuszcze (g)</td>
+                    <td id="fat-breakfast">0</td>
+                    <td id="fat-secondBreakfast">0</td>
+                    <td id="fat-lunch">0</td>
+                    <td id="fat-snack">0</td>
+                    <td id="fat-dinner">0</td>
+                    <td id="fat-total">0</td>
+                </tr>
+                <tr>
+                    <td>Węglowodany (g)</td>
+                    <td id="carb-breakfast">0</td>
+                    <td id="carb-secondBreakfast">0</td>
+                    <td id="carb-lunch">0</td>
+                    <td id="carb-snack">0</td>
+                    <td id="carb-dinner">0</td>
+                    <td id="carb-total">0</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <input type="submit" value="Zapisz dzienny jadłospis">
+        </form>
+
+        <!-- Przykładowy formularz wyszukiwania -->
+        <form id="searchForm" action="/search" method="GET">
+            <input type="text" name="destination" value="Sprawdź podsumowanie" readonly>
+            <input type="date" name="startDate">
+            <input type="date" name="endDate">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+</div>
+
+<script>
+    function addProduct(mealType) {
+        const selectElement = document.getElementById(`${mealType}Select`);
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        const productId = selectedOption ? selectedOption.value : null;
+        if (!productId) return;
+
+        const productIdsInput = document.getElementById(`${mealType}ProductIds`);
+        let productIds = productIdsInput.value ? productIdsInput.value.split(",") : [];
+        productIds.push(productId);
+        productIdsInput.value = productIds.join(",");
+
+        const selectedText = selectedOption.text;
+        const match = selectedText.match(/^(.*?) - (\d+\.?\d*) kcal, (\d+\.?\d*)g białka, (\d+\.?\d*)g tłuszczu, (\d+\.?\d*)g węglowodanów$/);
+        if (!match) return;
+        const [, name, kcal, protein, fat, carb] = match;
+
+        const productContainer = document.createElement('div');
+        productContainer.classList.add('product-container');
+
+        const productLabel = document.createElement('span');
+        productLabel.textContent = `${name} `;
+
+        const productInput = document.createElement('input');
+        productInput.type = 'number';
+        productInput.min = 1;
+        productInput.value = 100;
+        productInput.oninput = updateSummary;
+
+        const gramLabel = document.createElement('span');
+        gramLabel.textContent = " gram ";
+
+        const productInfo = document.createElement('span');
+        productInfo.classList.add('product-info');
+        productInfo.dataset.nutrition = `${kcal},${protein},${fat},${carb}`;
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = "Usuń";
+        removeButton.onclick = () => {
+            productContainer.remove();
+            updateSummary();
+            updateProductIds(mealType);
+        };
+
+        productContainer.appendChild(productLabel);
+        productContainer.appendChild(productInput);
+        productContainer.appendChild(gramLabel);
+        productContainer.appendChild(productInfo);
+        productContainer.appendChild(removeButton);
+
+        document.getElementById(`${mealType}Products`).appendChild(productContainer);
+        updateProductIds(mealType);
+
+        selectElement.value = "";
+        updateSummary();
+    }
+
+    function updateProductIds(mealType) {
+        const productIdsInput = document.getElementById(`${mealType}ProductIds`);
+        let productIds = [];
+        document.querySelectorAll(`#${mealType}Products .product-container`).forEach(container => {
+            const productInput = container.querySelector('input[type="number"]');
+            if (productInput) {
+                productIds.push(productInput.value);
+            }
+        });
+        productIdsInput.value = productIds.join(",");
+    }
+
+    function updateSummary() {
+        const meals = ["breakfast", "secondBreakfast", "lunch", "snack", "dinner"];
+        const totals = { calories: 0, protein: 0, fat: 0, carbs: 0 };
+
+        meals.forEach(meal => {
+            let mealCalories = 0, mealProtein = 0, mealFat = 0, mealCarbs = 0;
+            document.querySelectorAll(`#${meal}Products .product-container`).forEach(container => {
+                const quantityInput = container.querySelector('input[type="number"]');
+                const productInfo = container.querySelector('.product-info');
+                if (!quantityInput || !productInfo) return;
+                const productValues = productInfo.dataset.nutrition.split(",").map(Number);
+                const weight = parseFloat(quantityInput.value) || 0;
+                if (productValues.length === 4) {
+                    mealCalories += (productValues[0] * weight) / 100;
+                    mealProtein += (productValues[1] * weight) / 100;
+                    mealFat += (productValues[2] * weight) / 100;
+                    mealCarbs += (productValues[3] * weight) / 100;
+                }
+            });
+            document.getElementById(`cal-${meal}`).innerText = mealCalories.toFixed(1);
+            document.getElementById(`protein-${meal}`).innerText = mealProtein.toFixed(1);
+            document.getElementById(`fat-${meal}`).innerText = mealFat.toFixed(1);
+            document.getElementById(`carb-${meal}`).innerText = mealCarbs.toFixed(1);
+            totals.calories += mealCalories;
+            totals.protein += mealProtein;
+            totals.fat += mealFat;
+            totals.carbs += mealCarbs;
+        });
+        document.getElementById("cal-total").innerText = totals.calories.toFixed(1);
+        document.getElementById("protein-total").innerText = totals.protein.toFixed(1);
+        document.getElementById("fat-total").innerText = totals.fat.toFixed(1);
+        document.getElementById("carb-total").innerText = totals.carbs.toFixed(1);
+    }
+
+    document.addEventListener("input", updateSummary);
+</script>
+</body>
+</html>

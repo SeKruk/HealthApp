@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthApp - Dodaj Przepis</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        .form-container {
+            margin: 20px auto;
+            width: 100%;
+            max-width: 600px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form action="/recipes" method="post">
+            <input type="text" name="title" placeholder="Tytuł przepisu" required>
+            <textarea name="description" placeholder="Opis przepisu" required></textarea>
+            <textarea name="ingredients" placeholder="Składniki" required></textarea>
+            <textarea name="source" placeholder="Źródło przepisu"></textarea>
+            <select name="category" required>
+                <option value="breakfast">Śniadanie</option>
+                <option value="lunch">Obiad</option>
+                <option value="dinner">Kolacja</option>
+                <option value="dessert">Deser</option>
+            </select>
+            <input type="text" name="imageUrl" placeholder="URL obrazka">
+            <button type="submit">Dodaj przepis</button>
+        </form>
+    </div>
+</body>
+</html>
