@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>HealthApp - Breakfast Recipes</title>
+    <title>HealthApp - Dinner Recipes</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
     <style>
         #searchForm {
@@ -40,10 +40,10 @@
 
         .grid-item img {
             width: 100%;
-            height: 75%; /* Adjusted height */
+            height: 75%;
             object-fit: cover;
             position: absolute;
-            top: 12.5%; /* Push image down */
+            top: 12.5%;
             left: 0;
         }
 
@@ -79,13 +79,12 @@
     </style>
 </head>
 <body>
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
 
 <div class="grid-container">
     <div th:each="recipe : ${recipes}" class="grid-item">
         <div class="calories-box">
-            <h3 th:text="${recipe.calories != null ? #numbers.formatInteger(recipe.calories, 0, 'COMMA') + ' kcal' : 'Brak danych'}"></h3>
+            <h3 th:text="${recipe.calories != null ? #numbers.formatInteger(recipe.calories, 0, 'COMMA')  + ' kcal / porcja' : 'Brak danych'}"></h3>
         </div>
         <a th:href="@{'/recipe/' + ${recipe.id}}">
             <img th:src="${recipe.imageUrl}" alt="Obrazek">

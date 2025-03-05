@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hotel</title>
+    <title>Produkty</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
     <style>
         body {
@@ -10,7 +10,29 @@
             margin: 0;
             padding: 0;
         }
+   main {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
 
+        main h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        main p {
+            font-size: 18px;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #666;
+        }
         .form-container {
             margin: 20px auto;
             width: 100%;
@@ -51,7 +73,6 @@
             margin-bottom: 15px;
         }
 
-        /* 🔹 Poprawiona stylizacja dla produktów */
         .product-container {
             display: flex;
             align-items: center;
@@ -68,24 +89,24 @@
         }
 
         .product-container input {
-            width: 60px; /* 🔹 Mniejsze pole na gramaturę */
+            width: 60px;
             margin: 0 5px;
             text-align: center;
         }
 
         .product-container button {
             cursor: pointer;
-            background-color: #999; /* Light gray color for less visibility */
+            background-color: #999;
             color: white;
             border: none;
             padding: 5px 10px;
             border-radius: 4px;
-            font-size: 12px; /* Smaller font size */
-            opacity: 0.7; /* Slightly transparent */
+            font-size: 12px;
+            opacity: 0.7;
         }
 
         .product-container button:hover {
-            opacity: 1; /* Full opacity on hover */
+            opacity: 1;
         }
 
         input[type="submit"] {
@@ -98,15 +119,17 @@
             width: 100%;
         }
 
-        /* Kalendarz */
         .calendar-container {
-            margin: 20px;
+            margin: 20px auto;
             padding: 20px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-width: 300px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #date-picker {
@@ -140,33 +163,38 @@
         margin: 5px;
         font-size: 16px;
     }
-
+ .errorMessage {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
     </style>
 </head>
 
 <body>
-
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
-
-
-<div class="form-container">
-    <div th:if="${successMessage}" class="success-message">
-        <p th:text="${successMessage}" style="color: green; font-weight: bold;"></p>
-    </div>
-    <form action="/products" method="post">
-        <input type="text" name="name" placeholder="Nazwa produktu" required>
-        <input type="number" name="kcal" placeholder="Kcal" required>
-        <input type="number" name="protein" placeholder="Protein" required>
-        <input type="number" name="fat" placeholder="Fat">
-        <input type="number" name="carb" placeholder="Carb">
-        <button type="submit">Dodaj produkt</button>
-    </form>
+<main>
+    <h1>Dodawaj produkty, uzupełniaj posiłki i wyświetl swoje podsumowanie</h1>
+    <p>
+       Aby dodać produkty do poszczególnych posiłków musisz najpierw wybrać datę!!! <br>
+       Aby móc skorzystać z opcji wyświetlenia podsumowania musisz być zalogowany!
+    </p>
+</main>
+<div th:if="${errorMessage}" class="errorMessage">
+    <p th:text="${errorMessage}"></p>
 </div>
+
+
 
 <div class="container">
     <div class="forms-container">
-        <!-- Kalendarz -->
         <form action="/homeNutritions" method="get">
             <div class="calendar-container">
                 <h2>Wybierz datę</h2>
@@ -175,11 +203,9 @@
             </div>
         </form>
 
-        <!-- Formularz posiłków -->
         <form action="/saveDailyMeals" method="post">
             <input type="hidden" name="mealDate" th:value="${selectedDate}">
 
-            <!-- Śniadanie -->
             <div class="meal-section">
                 <h2>Śniadanie</h2>
                 <div id="breakfastProducts" class="product-list"></div>
@@ -193,10 +219,13 @@
                     </th:block>
                 </select>
                 <button type="button" onclick="addProduct('breakfast')">Dodaj produkt do śniadania</button>
+                <input type="hidden" name="mealType" value="BREAKFAST">
+                <input type="hidden" name="breakfastQuantities" id="breakfastQuantities">
+
+
                 <input type="hidden" name="breakfastProductIds" id="breakfastProductIds">
             </div>
 
-            <!-- Drugie śniadanie -->
             <div class="meal-section">
                 <h2>Drugie śniadanie</h2>
                 <div id="secondBreakfastProducts" class="product-list"></div>
@@ -210,10 +239,12 @@
                     </th:block>
                 </select>
                 <button type="button" onclick="addProduct('secondBreakfast')">Dodaj produkt do drugiego śniadania</button>
+                <input type="hidden" name="mealType" value="SECOND_BREAKFAST">
                 <input type="hidden" name="secondBreakfastProductIds" id="secondBreakfastProductIds">
+                <input type="hidden" name="secondBreakfastQuantities" id="secondBreakfastQuantities">
+
             </div>
 
-            <!-- Obiad -->
             <div class="meal-section">
                 <h2>Obiad</h2>
                 <div id="lunchProducts" class="product-list"></div>
@@ -227,10 +258,12 @@
                     </th:block>
                 </select>
                 <button type="button" onclick="addProduct('lunch')">Dodaj produkt do obiadu</button>
+                <input type="hidden" name="mealType" value="LUNCH">
                 <input type="hidden" name="lunchProductIds" id="lunchProductIds">
+                <input type="hidden" name="lunchQuantities" id="lunchQuantities">
+
             </div>
 
-            <!-- Podwieczorek -->
             <div class="meal-section">
                 <h2>Podwieczorek</h2>
                 <div id="snackProducts" class="product-list"></div>
@@ -244,10 +277,12 @@
                     </th:block>
                 </select>
                 <button type="button" onclick="addProduct('snack')">Dodaj produkt do podwieczorku</button>
+                <input type="hidden" name="mealType" value="SNACK">
                 <input type="hidden" name="snackProductIds" id="snackProductIds">
+                <input type="hidden" name="snackQuantities" id="snackQuantities">
+
             </div>
 
-            <!-- Kolacja -->
             <div class="meal-section">
                 <h2>Kolacja</h2>
                 <div id="dinnerProducts" class="product-list"></div>
@@ -261,10 +296,12 @@
                     </th:block>
                 </select>
                 <button type="button" onclick="addProduct('dinner')">Dodaj produkt do kolacji</button>
+                <input type="hidden" name="mealType" value="DINNER">
                 <input type="hidden" name="dinnerProductIds" id="dinnerProductIds">
+                <input type="hidden" name="dinnerQuantities" id="dinnerQuantities">
+
             </div>
 
-            <!-- Podsumowanie dzienne -->
             <h2>Podsumowanie dzienne</h2>
             <table border="1">
                 <thead>
@@ -321,8 +358,7 @@
             <input type="submit" value="Zapisz dzienny jadłospis">
         </form>
 
-        <!-- Przykładowy formularz wyszukiwania -->
-        <form id="searchForm" action="/search" method="GET">
+        <form id="searchForm" action="/homeSummary" method="GET">
             <input type="text" name="destination" value="Sprawdź podsumowanie" readonly>
             <input type="date" name="startDate">
             <input type="date" name="endDate">
@@ -330,111 +366,145 @@
         </form>
     </div>
 </div>
-
+<div class="form-container">
+    <div th:if="${successMessage}" class="success-message">
+        <p th:text="${successMessage}" style="color: green; font-weight: bold;"></p>
+    </div>
+    <form action="/products" method="post">
+        <input type="text" name="name" placeholder="Nazwa produktu" required>
+        <input type="number" name="kcal" placeholder="Kcal" required>
+        <input type="number" name="protein" placeholder="Protein" required step="any">
+        <input type="number" name="fat" placeholder="Fat" step = "any">
+        <input type="number" name="carb" placeholder="Carb" step = "any">
+        <button type="submit">Dodaj produkt</button>
+    </form>
+</div>
 <script>
     function addProduct(mealType) {
-        const selectElement = document.getElementById(`${mealType}Select`);
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const productId = selectedOption ? selectedOption.value : null;
-        if (!productId) return;
+    const selectElement = document.getElementById(mealType + 'Select');
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const productId = selectedOption ? selectedOption.value : null;
+    if (!productId) return;
 
-        const productIdsInput = document.getElementById(`${mealType}ProductIds`);
-        let productIds = productIdsInput.value ? productIdsInput.value.split(",") : [];
-        productIds.push(productId);
-        productIdsInput.value = productIds.join(",");
+    const productIdsInput = document.getElementById(mealType + 'ProductIds');
+    let productIds = productIdsInput.value ? productIdsInput.value.split(",") : [];
+    if (productIds.includes(productId)) {
+        alert("Ten produkt został już dodany do tego posiłku.");
+        return;
+    }
 
-        const selectedText = selectedOption.text;
-        const match = selectedText.match(/^(.*?) - (\d+\.?\d*) kcal, (\d+\.?\d*)g białka, (\d+\.?\d*)g tłuszczu, (\d+\.?\d*)g węglowodanów$/);
-        if (!match) return;
-        const [, name, kcal, protein, fat, carb] = match;
+    productIds.push(productId);
+    productIdsInput.value = productIds.join(",");
 
-        const productContainer = document.createElement('div');
-        productContainer.classList.add('product-container');
+    const selectedText = selectedOption.text;
+    const match = selectedText.match(/^(.*?) - (\d+\.?\d*) kcal, (\d+\.?\d*)g białka, (\d+\.?\d*)g tłuszczu, (\d+\.?\d*)g węglowodanów$/);
+    if (!match) return;
+    const [, name, kcal, protein, fat, carb] = match;
 
-        const productLabel = document.createElement('span');
-        productLabel.textContent = `${name} `;
+    const productContainer = document.createElement('div');
+    productContainer.classList.add('product-container');
 
-        const productInput = document.createElement('input');
-        productInput.type = 'number';
-        productInput.min = 1;
-        productInput.value = 100;
-        productInput.oninput = updateSummary;
+    const productLabel = document.createElement('span');
+    productLabel.textContent = name;
 
-        const gramLabel = document.createElement('span');
-        gramLabel.textContent = " gram ";
-
-        const productInfo = document.createElement('span');
-        productInfo.classList.add('product-info');
-        productInfo.dataset.nutrition = `${kcal},${protein},${fat},${carb}`;
-
-        const removeButton = document.createElement('button');
-        removeButton.textContent = "Usuń";
-        removeButton.onclick = () => {
-            productContainer.remove();
-            updateSummary();
-            updateProductIds(mealType);
-        };
-
-        productContainer.appendChild(productLabel);
-        productContainer.appendChild(productInput);
-        productContainer.appendChild(gramLabel);
-        productContainer.appendChild(productInfo);
-        productContainer.appendChild(removeButton);
-
-        document.getElementById(`${mealType}Products`).appendChild(productContainer);
+    const productInput = document.createElement('input');
+    productInput.type = 'number';
+    productInput.min = 1;
+    productInput.value = 100;
+    productInput.dataset.productId = productId;
+    productInput.dataset.mealType = mealType;
+    productInput.oninput = function () {
         updateProductIds(mealType);
-
-        selectElement.value = "";
         updateSummary();
-    }
+    };
 
-    function updateProductIds(mealType) {
-        const productIdsInput = document.getElementById(`${mealType}ProductIds`);
-        let productIds = [];
-        document.querySelectorAll(`#${mealType}Products .product-container`).forEach(container => {
-            const productInput = container.querySelector('input[type="number"]');
-            if (productInput) {
-                productIds.push(productInput.value);
-            }
-        });
-        productIdsInput.value = productIds.join(",");
-    }
+    const gramLabel = document.createElement('span');
+    gramLabel.textContent = " gram ";
 
-    function updateSummary() {
-        const meals = ["breakfast", "secondBreakfast", "lunch", "snack", "dinner"];
-        const totals = { calories: 0, protein: 0, fat: 0, carbs: 0 };
+    const productInfo = document.createElement('span');
+    productInfo.classList.add('product-info');
+    productInfo.dataset.nutrition = `${kcal},${protein},${fat},${carb}`;
+    productInfo.dataset.productId = productId;
 
-        meals.forEach(meal => {
-            let mealCalories = 0, mealProtein = 0, mealFat = 0, mealCarbs = 0;
-            document.querySelectorAll(`#${meal}Products .product-container`).forEach(container => {
-                const quantityInput = container.querySelector('input[type="number"]');
-                const productInfo = container.querySelector('.product-info');
-                if (!quantityInput || !productInfo) return;
-                const productValues = productInfo.dataset.nutrition.split(",").map(Number);
-                const weight = parseFloat(quantityInput.value) || 0;
-                if (productValues.length === 4) {
-                    mealCalories += (productValues[0] * weight) / 100;
-                    mealProtein += (productValues[1] * weight) / 100;
-                    mealFat += (productValues[2] * weight) / 100;
-                    mealCarbs += (productValues[3] * weight) / 100;
-                }
+    const removeButton = document.createElement('button');
+    removeButton.textContent = "Usuń";
+    removeButton.onclick = function () {
+        productContainer.remove();
+        updateProductIds(mealType);
+        updateSummary();
+    };
+
+    productContainer.appendChild(productLabel);
+    productContainer.appendChild(productInput);
+    productContainer.appendChild(gramLabel);
+    productContainer.appendChild(productInfo);
+    productContainer.appendChild(removeButton);
+
+    document.getElementById(mealType + 'Products').appendChild(productContainer);
+    updateProductIds(mealType);
+
+    selectElement.value = "";
+    updateSummary();
+}
+ function updateProductIds(mealType) {
+    const productIdsInput = document.getElementById(mealType + 'ProductIds');
+    const quantitiesInput = document.getElementById(mealType + 'Quantities');
+
+    let productIds = [];
+    let quantities = [];
+
+    document.querySelectorAll(`#${mealType}Products .product-container`).forEach(container => {
+        const productInfo = container.querySelector('.product-info');
+        const quantityInput = container.querySelector('input[type="number"]');
+
+        if (productInfo && quantityInput) {
+            const productId = productInfo.dataset.productId;
+            const quantity = quantityInput.value;
+
+            productIds.push(productId);
+            quantities.push(quantity);
+        }
+    });
+
+    productIdsInput.value = productIds.join(",");
+    quantitiesInput.value = quantities.join(",");
+}
+
+          function updateSummary() {
+            const meals = ["breakfast", "secondBreakfast", "lunch", "snack", "dinner"];
+            const totals = { calories: 0, protein: 0, fat: 0, carbs: 0 };
+
+            meals.forEach(meal => {
+                let mealCalories = 0, mealProtein = 0, mealFat = 0, mealCarbs = 0;
+                document.querySelectorAll(`#${meal}Products .product-container`).forEach(container => {
+                    const quantityInput = container.querySelector('input[type="number"]');
+                    const productInfo = container.querySelector('.product-info');
+                    if (!quantityInput || !productInfo) return;
+                    const productValues = productInfo.dataset.nutrition.split(",").map(Number);
+                    const weight = parseFloat(quantityInput.value) || 0;
+                    if (productValues.length === 4) {
+                        mealCalories += (productValues[0] * weight) / 100;
+                        mealProtein += (productValues[1] * weight) / 100;
+                        mealFat += (productValues[2] * weight) / 100;
+                        mealCarbs += (productValues[3] * weight) / 100;
+                    }
+                });
+                document.getElementById(`cal-${meal}`).innerText = mealCalories.toFixed(1);
+                document.getElementById(`protein-${meal}`).innerText = mealProtein.toFixed(1);
+                document.getElementById(`fat-${meal}`).innerText = mealFat.toFixed(1);
+                document.getElementById(`carb-${meal}`).innerText = mealCarbs.toFixed(1);
+
+                totals.calories += mealCalories;
+                totals.protein += mealProtein;
+                totals.fat += mealFat;
+                totals.carbs += mealCarbs;
             });
-            document.getElementById(`cal-${meal}`).innerText = mealCalories.toFixed(1);
-            document.getElementById(`protein-${meal}`).innerText = mealProtein.toFixed(1);
-            document.getElementById(`fat-${meal}`).innerText = mealFat.toFixed(1);
-            document.getElementById(`carb-${meal}`).innerText = mealCarbs.toFixed(1);
-            totals.calories += mealCalories;
-            totals.protein += mealProtein;
-            totals.fat += mealFat;
-            totals.carbs += mealCarbs;
-        });
-        document.getElementById("cal-total").innerText = totals.calories.toFixed(1);
-        document.getElementById("protein-total").innerText = totals.protein.toFixed(1);
-        document.getElementById("fat-total").innerText = totals.fat.toFixed(1);
-        document.getElementById("carb-total").innerText = totals.carbs.toFixed(1);
-    }
 
-    document.addEventListener("input", updateSummary);
+            document.getElementById("cal-total").innerText = totals.calories.toFixed(1);
+            document.getElementById("protein-total").innerText = totals.protein.toFixed(1);
+            document.getElementById("fat-total").innerText = totals.fat.toFixed(1);
+            document.getElementById("carb-total").innerText = totals.carbs.toFixed(1);
+        }
 </script>
 </body>
 </html>

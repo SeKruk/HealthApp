@@ -1,5 +1,4 @@
 package com.example.healthapp;
-import com.example.healthapp.user.User;
 import com.example.healthapp.user.UserFacade;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

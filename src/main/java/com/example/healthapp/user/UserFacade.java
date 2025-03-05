@@ -10,21 +10,18 @@ public class UserFacade {
     @Autowired
     private UserRepository userRepository;
 
-    public void addUser(String name, String surname, String email, String password,String confirmPassword, double weight, int height) {
-        // Tworzymy nowego użytkownika
-        User user = new User(name, surname, email, password,confirmPassword, weight, height);
-        userRepository.save(user);  // JPA automatycznie generuje ID
+    public void addUser(String name, String surname, String email, String password,String confirmPassword, double weight, int height, String description) {
+
+        User user = new User(name, surname, email, password,confirmPassword, weight, height, description);
+        userRepository.save(user);
     }
     public User findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            return new User();  // Konwersja User na UserDto
-        }
-        return null;
+        return userRepository.findByEmail(email);
+
     }
 
     public boolean authenticateUser(String email, String password) {
-        User user = userRepository.findByEmail(email);  // Używamy repozytorium bezpośrednio
+        User user = userRepository.findByEmail(email);
         return user != null && user.getPassword().equals(password);
     }
 
@@ -51,28 +48,38 @@ public class UserFacade {
 
     public double calculateBMR(String gender, double weight, double height, int age, double activityLevel, String goal) {
         double bmr = calculateBasicBMR(gender, weight, height, age);
+
         double dailyCalories = bmr * activityLevel;
 
+        return Math.round(dailyCalories);
+    }
+    public double calculateGoalCalories(double basicCalories, String goal) {
         switch (goal.toLowerCase()) {
             case "lose_weight":
-                dailyCalories -= 500;
-                break;
+                return basicCalories - 300;
+            case "lose_weight2":
+                return basicCalories - 600;
             case "gain_weight":
-                dailyCalories += 500;
-                break;
+                return basicCalories + 300;
+            case "gain_weight2":
+                return basicCalories + 600;
             case "maintain_weight":
             default:
-                break;
+                return basicCalories;
         }
-
-        return dailyCalories;
     }
-
     public List<User> getAllUsers() {
-        return userRepository.findAll();  // Pobiera wszystkich użytkowników
+        return userRepository.findAll();
     }
 
     public User findUserById(int id) {
-        return userRepository.findById(id).orElse(null);  // Pobiera użytkownika po ID
+        return userRepository.findById(id).orElse(null);
+    }
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+    public void updateWeight(User user, double weight) {
+        user.setWeight(weight);
+        userRepository.save(user);
     }
 }

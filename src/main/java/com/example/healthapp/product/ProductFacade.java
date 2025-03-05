@@ -20,9 +20,7 @@ public class ProductFacade {
         public List<Product> getAllProducts() {
             return productRepository.findAll();
         }
-
-        // Metoda do wyszukiwania produktu po ID
-        public Product getProductById(Long id) {
+        public Product findAllById(Long id) {
             return productRepository.findById(id).orElse(null);
         }
 }

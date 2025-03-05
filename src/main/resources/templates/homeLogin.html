@@ -2,11 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Hotel</title>
+    <title>Login/Rejestracja</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Ogólne style */
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -14,9 +13,6 @@
             background: linear-gradient(135deg, #f8f9fa, #e9ecef);
         }
 
-
-
-        /* Stylizacja sekcji z informacją */
         .text {
             text-align: center;
             padding: 40px;
@@ -31,7 +27,6 @@
             color: #333;
         }
 
-        /* Styl formularzy */
         .container {
             display: flex;
             flex-direction: column;
@@ -103,7 +98,6 @@
             transform: scale(1.05);
         }
 
-        /* Responsywność */
         @media (min-width: 768px) {
             .container {
                 flex-direction: row;
@@ -116,22 +110,32 @@
                 margin-right: 50px;
             }
         }
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
 
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
 
-<!-- Sekcja informacyjna -->
 <div class="text">
     <h2>Jeśli masz już konto, zaloguj się lub utwórz nowe konto, aby odblokować wszystkie funkcje naszej witryny!</h2>
 </div>
-
-<!-- Kontener formularzy -->
+<div th:if="${errorMessage}" class="error-message">
+    <p th:text="${errorMessage}"></p>
+</div>
 <div class="container">
-    <!-- Formularz logowania -->
-    <form th:action="@{/homeLogin}" method="post">
+    <form th:action="@{/Login}" method="post">
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" id="login-email" class="form-control" name="email" required />
@@ -143,23 +147,17 @@
         <button type="submit" class="btn btn-primary">Zaloguj</button>
     </form>
 
-    <!-- Formularz rejestracji -->
     <form th:action="@{/register}" method="post">
         <label for="name">Imię:</label>
         <input type="text" id="name" name="name" required>
-
         <label for="surname">Nazwisko:</label>
         <input type="text" id="surname" name="surname" required>
-
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
-
         <label for="password">Hasło:</label>
         <input type="password" id="password" name="password" required>
-
         <label for="confirmPassword">Potwierdź Hasło:</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required>
-
         <button type="submit">Zarejestruj się</button>
     </form>
 </div>

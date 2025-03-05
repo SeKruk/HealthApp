@@ -1,4 +1,3 @@
-/* Navigation */
 nav {
     background-color: #333;
     padding: 20px 0;
@@ -30,7 +29,6 @@ nav ul li a:hover {
     background-color: #575757;
 }
 
-/* Dodatkowa sekcja z napisem */
 .reserve {
     font-size: 20px;
     font-weight: bold;

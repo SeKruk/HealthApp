@@ -28,7 +28,7 @@ public class RecipeFacadeController {
     @GetMapping("/recipes/{category}")
     public String getRecipesByCategory(@PathVariable String category, Model model) {
         List<Recipe> recipes = recipeFacade.getRecipesByCategory(category);
-        System.out.println("Fetched recipes for category: " + category); // Debugging line
+        System.out.println("Fetched recipes for category: " + category);
         model.addAttribute("recipes", recipes);
         model.addAttribute("category", category);
         return "home" + category.substring(0, 1).toUpperCase() + category.substring(1);
@@ -37,6 +37,6 @@ public class RecipeFacadeController {
     public String getRecipeDetails(@PathVariable int id, Model model) {
         Recipe recipe = recipeFacade.getRecipeById(id);
         model.addAttribute("recipe", recipe);
-        return "recipeDetails"; // Zakładając, że masz szablon recipeDetails.html
+        return "recipeDetails";
     }
 }

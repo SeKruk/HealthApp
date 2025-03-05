@@ -144,7 +144,6 @@
 </head>
 <body>
 
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
 
 <main>
@@ -169,7 +168,6 @@
         </form>
 
         <div id="bmiResult">
-            <!-- Wynik BMI będzie wyświetlany tutaj -->
         </div>
 
         <h2>Interpretacja wyniku</h2>
@@ -199,31 +197,28 @@
 
 <script>
     document.getElementById('bmiForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Zapobiega domyślnej akcji formularza
+       event.preventDefault();
 
-        const weight = document.getElementById('weight').value;
-        const height = document.getElementById('height').value;
+       const weight = document.getElementById('weight').value;
+       const height = document.getElementById('height').value;
 
-        // Utworzenie URL z parametrami
-        const url = `/api/guests/calculateBMI?weight=${weight}&height=${height}`;
+       const url = `/calculateBMI?weight=${weight}&height=${height}`;
 
-        // Wykonanie zapytania do serwera
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Zakładając, że odpowiedź to liczba
-                document.getElementById('bmiResult').innerText = `Twoje BMI wynosi: ${data}`;
-            })
-            .catch(error => {
-                console.error('Błąd:', error);
-                document.getElementById('bmiResult').innerText = 'Wystąpił błąd podczas obliczania BMI.';
-            });
-    });
+       fetch(url)
+           .then(response => {
+               if (!response.ok) {
+                   throw new Error(`HTTP error! Status: ${response.status}`);
+               }
+               return response.text();
+           })
+           .then(text => {
+               document.getElementById('bmiResult').innerHTML = text;
+           })
+           .catch(error => {
+               console.error('Błąd:', error);
+               document.getElementById('bmiResult').innerText = 'Wystąpił błąd podczas obliczania BMI.';
+           });
+   });
 </script>
 </body>
 </html>

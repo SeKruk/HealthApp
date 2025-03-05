@@ -2,15 +2,117 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>HealthApp</title>
+    <title>Podsumowanie Diety</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 10px;
+            padding: 0;
+            font-size: 14px;
+        }
 
+        h3 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
 
+        h4 {
+            color: #333;
+            margin: 8px 0 5px;
+            font-size: 14px;
+        }
+
+       table {
+        table-layout: fixed;
+        width: 100%;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+th, td {
+     text-align: center;
+     width: 20%;
+     border-bottom: 1px solid #ddd;
+
+}
+
+td:first-child, th:first-child {
+    text-align: left;
+}
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .summary {
+            background-color: #ddd;
+            padding: 8px;
+            border-radius: 3px;
+            margin-top: 5px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .summary p {
+            font-weight: bold;
+            margin: 3px 0;
+        }
+
+        .summary span {
+            color: #4CAF50;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
+
+<div th:each="entry : ${summaryData}">
+    <h3 th:text="${entry.mealDate}"></h3>
+
+    <div th:each="mealType : ${entry.mealsByType}">
+        <h4 th:text="${mealTranslations[mealType.key]}"></h4>
+        <table>
+            <thead>
+            <tr>
+                <th>Produkt</th>
+                <th>Ilość</th>
+                <th>Kalorie</th>
+                <th>Białko</th>
+                <th>Tłuszcze</th>
+                <th>Węglowodany</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="mealProduct : ${mealType.value}">
+                <td th:text="${mealProduct.product.name}"></td>
+                <td th:text="${mealProduct.quantity}"></td>
+                <td th:text="${#numbers.formatDecimal(mealProduct.getCaloriesForProduct(), 1, 1)}"></td>
+                <td th:text="${#numbers.formatDecimal(mealProduct.getProteinForProduct(), 1, 1)}"></td>
+                <td th:text="${#numbers.formatDecimal(mealProduct.getFatForProduct(), 1, 1)}"></td>
+                <td th:text="${#numbers.formatDecimal(mealProduct.getCarbsForProduct(), 1, 1)}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <p>Łącznie dla dnia <span th:text="${entry.mealDate}"></span>:</p>
+        <p>Kalorie: <span th:text="${entry.totalCalories}"></span> kcal</p>
+        <p>Białko: <span th:text="${entry.totalProtein}"></span> g</p>
+        <p>Tłuszcze: <span th:text="${entry.totalFat}"></span> g</p>
+        <p>Węglowodany: <span th:text="${entry.totalCarbs}"></span> g</p>
+    </div>
+</div>
+
 </body>
 </html>

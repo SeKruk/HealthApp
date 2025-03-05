@@ -5,7 +5,6 @@
     <title>HealthApp - Zapotrzebowanie na wodę</title>
     <link rel="stylesheet" type="text/css" href="/style.css">
     <style>
-        /* Ogólne style */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -86,9 +85,6 @@
             font-size: 18px;
         }
 
-
-
-        /* Responsywność */
         @media (max-width: 768px) {
             input[type="number"], button {
                 width: 80%;
@@ -103,63 +99,66 @@
     </style>
 </head>
 <body>
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
 
-<!-- Sekcja Zapotrzebowanie na wodę -->
 <div class="container">
     <h2>Zapotrzebowanie na wodę</h2>
 
     <div class="water-info">
         <label for="weight">Podaj swoją masę ciała (kg):</label>
-        <input type="number" id="weight" placeholder="Waga w kg">
-        <button onclick="calculateWaterNeeds()">Oblicz zapotrzebowanie</button>
-
-        <h3>Dzienne zapotrzebowanie: <span id="water-need">0</span> ml</h3>
+        <input type="number" id="weight" name="weight" placeholder="Waga w kg" th:value="${weight}">
+        <button id="calculateButton">Oblicz zapotrzebowanie</button>
     </div>
+
+    <h3>Dzienne zapotrzebowanie: <span id="waterNeed" th:text="${waterNeed}">0</span> ml</h3>
 
     <div class="water-info">
         <h3>Dodaj spożycie płynów</h3>
         <label for="water-intake">Podaj ilość wypitej wody (ml):</label>
-        <input type="number" id="water-intake" placeholder="Ilość ml">
-        <button onclick="addWaterIntake()">Dodaj</button>
-
-        <h3>Łącznie wypita woda: <span id="total-water">0</span> ml</h3>
-        <h3>Pozostało do wypicia: <span id="remaining-water">0</span> ml</h3>
+        <input type="number" id="water-intake" name="waterIntake" placeholder="Ilość ml">
+        <button id="addWaterButton">Dodaj</button>
     </div>
+
+    <h3>Łącznie wypita woda: <span id="totalWater" th:text="${totalWater}">0</span> ml</h3>
+    <h3>Pozostało do wypicia: <span id="remainingWater" th:text="${remainingWater}">0</span> ml</h3>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    let dailyWaterNeed = 0;
-    let totalWaterIntake = 0;
+    $(document).ready(function() {
+        $('#calculateButton').click(function() {
+            var weight = $('#weight').val();
 
-    function calculateWaterNeeds() {
-        let weight = document.getElementById("weight").value;
-        if (weight > 0) {
-            dailyWaterNeed = weight * 35; // 35 ml na 1 kg
-            document.getElementById("water-need").innerText = dailyWaterNeed.toFixed(0);
-            updateRemainingWater();
-        } else {
-            alert("Podaj poprawną masę ciała!");
-        }
-    }
+            $.ajax({
+                type: 'POST',
+                url: '/homeWater',
+                data: { weight: weight },
+                success: function(response) {
+                    $('#waterNeed').text(response.waterNeed);
+                    $('#remainingWater').text(response.remainingWater);
+                },
+                error: function() {
+                    alert('Wystąpił błąd przy obliczaniu zapotrzebowania.');
+                }
+            });
+        });
 
-    function addWaterIntake() {
-        let intake = document.getElementById("water-intake").value;
-        if (intake > 0) {
-            totalWaterIntake += parseFloat(intake);
-            document.getElementById("total-water").innerText = totalWaterIntake.toFixed(0);
-            updateRemainingWater();
-        } else {
-            alert("Podaj poprawną ilość wody!");
-        }
-    }
+        $('#addWaterButton').click(function() {
+            var waterIntake = $('#water-intake').val();
 
-    function updateRemainingWater() {
-        let remaining = dailyWaterNeed - totalWaterIntake;
-        document.getElementById("remaining-water").innerText = remaining > 0 ? remaining.toFixed(0) : "0";
-    }
+            $.ajax({
+                type: 'POST',
+                url: '/addWater',
+                data: { waterIntake: waterIntake },
+                success: function(response) {
+                    $('#totalWater').text(response.totalWater);
+                    $('#remainingWater').text(response.remainingWater);
+                },
+                error: function() {
+                    alert('Wystąpił błąd przy dodawaniu spożytej wody.');
+                }
+            });
+        });
+    });
 </script>
-
 </body>
-</html>

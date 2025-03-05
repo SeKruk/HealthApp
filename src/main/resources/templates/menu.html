@@ -8,15 +8,14 @@
         <li><a href="/homeRecipe">Przepisy</a></li>
         <li><a href="/homeNutrition">Znajdź produkt</a></li>
 
-        <!-- Sprawdzamy, czy użytkownik jest zalogowany -->
-        <li th:if="${session.loggedInUser != null}">
+        <li th:if="${session.user != null}">
             <a href="/homeProfile">Twój profil</a>
         </li>
-        <li th:if="${session.loggedInUser != null}">
+        <li th:if="${session.user != null}">
             <a href="/logout">Wyloguj</a>
         </li>
 
-        <li th:if="${session.loggedInUser == null}">
+        <li th:if="${session.user == null}">
             <a href="/homeLogin">Zaloguj się</a>
         </li>
     </ul>

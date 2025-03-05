@@ -17,7 +17,7 @@ public class RecipeFacade {
         recipeRepository.save(recipe);
     }
     public Recipe getRecipeById(int id) {
-        return recipeRepository.findById(id).orElse(null); // Zwraca przepis lub null, jeśli nie znaleziono
+        return recipeRepository.findById(id).orElse(null);
     }
 
 }

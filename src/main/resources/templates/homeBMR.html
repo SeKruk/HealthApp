@@ -14,7 +14,6 @@
         }
 
 
-        /* Main content */
         .main-content {
             text-align: center;
             padding: 60px 20px;
@@ -26,18 +25,17 @@
 
         .main-content p {
             margin: 20px 0;
-            font-size: 42px; /* Zmniejszone rozmiary */
+            font-size: 42px;
             font-weight: bold;
             color: #333;
         }
 
         #basic-calories, #goal-calories {
-            font-size: 55px; /* Umiarkowane zwiększenie czcionki */
+            font-size: 55px;
             color: #27ae60;
             font-weight: bold;
         }
 
-        /* Form Styling */
         .container {
             display: flex;
             justify-content: center;
@@ -60,14 +58,14 @@
 
         h2 {
             text-align: center;
-            font-size: 28px; /* Zmniejszona wielkość nagłówka */
+            font-size: 28px;
             color: #333;
             margin-bottom: 30px;
             text-transform: uppercase;
         }
 
         label {
-            font-size: 18px; /* Umiarkowane zwiększenie czcionki */
+            font-size: 18px;
             color: #555;
             margin-bottom: 10px;
             display: block;
@@ -76,10 +74,10 @@
         input, select {
             width: 100%;
             padding: 14px;
-            margin-bottom: 20px; /* Zmniejszenie odstępu */
+            margin-bottom: 20px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px; /* Umiarkowane zwiększenie czcionki */
+            font-size: 16px;
             background-color: #fafafa;
             transition: border-color 0.3s;
         }
@@ -95,7 +93,7 @@
             color: white;
             border: none;
             padding: 16px 24px;
-            font-size: 18px; /* Umiarkowane powiększenie czcionki */
+            font-size: 18px;
             font-weight: bold;
             border-radius: 8px;
             transition: background-color 0.3s;
@@ -105,7 +103,6 @@
             background-color: #2980b9;
         }
 
-        /* Table Styling */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -117,9 +114,9 @@
         }
 
         th, td {
-            padding: 16px; /* Zmniejszenie paddingu */
+            padding: 16px;
             text-align: left;
-            font-size: 16px; /* Zmniejszenie czcionki w tabeli */
+            font-size: 16px;
         }
 
         th {
@@ -135,15 +132,11 @@
 </head>
 <body>
 
-<!-- Nawigacja -->
 <div th:replace="~{menu.html}"></div>
 
-
 <main class="main-content">
-    <p>Twoje zapotrzebowanie kaloryczne wynosi:</p>
-    <p id="basic-calories"></p>
-    <p>Aby osiągnąć cel, twoje zapotrzebowanie kaloryczne wynosi:</p>
-    <p id="goal-calories"></p>
+    <p>Twoje zapotrzebowanie kaloryczne wynosi: <strong id="basic-calories">0</strong> kcal</p>
+    <p>Aby osiągnąć cel, twoje zapotrzebowanie kaloryczne wynosi: <strong id="goal-calories">0</strong> kcal</p>
 </main>
 
 <div class="container">
@@ -171,26 +164,28 @@
             </select>
             <label for="goal">Cel:</label>
             <select id="goal" name="goal">
-                <option value="lose_weight">Chcę schudnąć</option>
-                <option value="gain_weight">Chcę przytyć</option>
+                <option value="lose_weight">Chcę schudnąć (0,5kg/tyg)</option>
+                <option value="lose_weight2">Chcę schudnąć (1kg/tyg)</option>
+                <option value="gain_weight">Chcę przytyć (0,5kg/tyg)</option>
+                <option value="gain_weight2">Chcę przytyć (1kg/tyg)</option>
                 <option value="maintain_weight">Chcę utrzymać masę</option>
             </select>
             <input type="submit" value="Oblicz wskaźnik BMR">
         </form>
+
     </div>
 </div>
 
 <script>
     $(document).ready(function() {
         $('#bmrForm').on('submit', function(event) {
-            event.preventDefault(); // Zatrzymaj domyślne działanie formularza
+            event.preventDefault();
 
             $.ajax({
-                url: '/api/guests/calculateBMR', // URL do wywołania
+                url: '/calculateBMR',
                 type: 'POST',
-                data: $(this).serialize(), // Serializacja danych formularza
+                data: $(this).serialize(),
                 success: function(response) {
-                    // Uaktualnienie wyników w odpowiednich miejscach
                     $('#basic-calories').text(response.basicCalories + ' kcal');
                     $('#goal-calories').text(response.goalCalories + ' kcal');
                 },
@@ -201,6 +196,5 @@
         });
     });
 </script>
-
 </body>
 </html>
